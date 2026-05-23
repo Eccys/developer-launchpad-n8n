@@ -1,0 +1,155 @@
+{
+  "name": "Developer Project Launcher",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "developer-launch",
+        "responseMode": "onReceived",
+        "options": {}
+      },
+      "name": "Webhook Trigger",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 1,
+      "position": [
+        380,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "keepOnlySet": true,
+        "values": {
+          "string": [
+            {
+              "name": "title",
+              "value": "={{$json[\"body\"][\"title\"]}}"
+            },
+            {
+              "name": "url",
+              "value": "={{$json[\"body\"][\"url\"]}}"
+            },
+            {
+              "name": "description",
+              "value": "={{$json[\"body\"][\"description\"]}}"
+            }
+          ]
+        },
+        "options": {}
+      },
+      "name": "Set Launch Vars",
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 1,
+      "position": [
+        560,
+        300
+      ]
+    },
+    {
+      "parameters": {
+        "subreddit": "github",
+        "title": "={{$node[\"Set Launch Vars\"].json[\"title\"]}}",
+        "url": "={{$node[\"Set Launch Vars\"].json[\"url\"]}}"
+      },
+      "name": "Reddit Post",
+      "type": "n8n-nodes-base.reddit",
+      "typeVersion": 1,
+      "position": [
+        800,
+        140
+      ]
+    },
+    {
+      "parameters": {
+        "text": "=🚀 Just launched! {{$node[\"Set Launch Vars\"].json[\"title\"]}}\n\nCheck it out here: {{$node[\"Set Launch Vars\"].json[\"url\"]}}\n\n#opensource #coding #buildinpublic"
+      },
+      "name": "Twitter Post",
+      "type": "n8n-nodes-base.twitter",
+      "typeVersion": 1,
+      "position": [
+        800,
+        250
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "https://dev.to/api/articles",
+        "authentication": "headerAuth",
+        "sendHeaders": true,
+        "headersUi": {
+          "parameter": [
+            {
+              "name": "api-key",
+              "value": "YOUR_DEVTO_API_KEY_HERE"
+            }
+          ]
+        },
+        "sendBody": true,
+        "bodyContentType": "json",
+        "specifyBody": "json",
+        "jsonBody": "={\"article\": {\"title\": \"{{$node[\"Set Launch Vars\"].json[\"title\"]}}\", \"published\": false, \"body_markdown\": \"## Just Launched!\\n\\n{{$node[\"Set\"].json[\"description\"]}}\\n\\nCheck it out here: [{{$node[\"Set Launch Vars\"].json[\"title\"]}}]({{$node[\"Set Launch Vars\"].json[\"url\"]}})\", \"tags\": [\"opensource\", \"github\", \"showdev\"]}}"
+      },
+      "name": "Dev.to Draft Post",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 3,
+      "position": [
+        800,
+        360
+      ]
+    },
+    {
+      "parameters": {
+        "content": "=🚀 **New Project Launched!**\n\n**Title:** {{$node[\"Set Launch Vars\"].json[\"title\"]}}\n**Link:** {{$node[\"Set Launch Vars\"].json[\"url\"]}}\n\n👉 **Click here to submit to Hacker News:**\nhttps://news.ycombinator.com/submitlink?u={{encodeURIComponent($node[\"Set Launch Vars\"].json[\"url\"])}}&t={{encodeURIComponent($node[\"Set Launch Vars\"].json[\"title\"])}}"
+      },
+      "name": "Discord Alert",
+      "type": "n8n-nodes-base.discord",
+      "typeVersion": 1,
+      "position": [
+        800,
+        470
+      ]
+    }
+  ],
+  "connections": {
+    "Webhook Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Launch Vars",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Launch Vars": {
+      "main": [
+        [
+          {
+            "node": "Reddit Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Twitter Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Dev.to Draft Post",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Discord Alert",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": false,
+  "settings": {}
+}

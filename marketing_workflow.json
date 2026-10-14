@@ -88,7 +88,7 @@
         "sendBody": true,
         "bodyContentType": "json",
         "specifyBody": "json",
-        "jsonBody": "={\"article\": {\"title\": \"{{$node[\"Set Launch Vars\"].json[\"title\"]}}\", \"published\": false, \"body_markdown\": \"## Just Launched!\\n\\n{{$node[\"Set\"].json[\"description\"]}}\\n\\nCheck it out here: [{{$node[\"Set Launch Vars\"].json[\"title\"]}}]({{$node[\"Set Launch Vars\"].json[\"url\"]}})\", \"tags\": [\"opensource\", \"github\", \"showdev\"]}}"
+        "jsonBody": "={\"article\": {\"title\": \"{{$node[\"Set Launch Vars\"].json[\"title\"]}}\", \"published\": false, \"body_markdown\": \"## Just Launched!\\n\\n{{$node[\"Set Launch Vars\"].json[\"description\"]}}\\n\\nCheck it out here: [{{$node[\"Set Launch Vars\"].json[\"title\"]}}]({{$node[\"Set Launch Vars\"].json[\"url\"]}})\", \"tags\": [\"opensource\", \"github\", \"showdev\"]}}"
       },
       "name": "Dev.to Draft Post",
       "type": "n8n-nodes-base.httpRequest",
